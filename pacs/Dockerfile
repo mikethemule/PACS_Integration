@@ -9,7 +9,6 @@ RUN pip3 install pydicom
 RUN pip3 install pynetdicom
 RUN pip3 install pdfkit
 RUN pip3 install hl7
-RUN pip3 install wkhtmltopdf
 RUN pip3 install mysql-connector-python
 RUN pip3 install requests
 
@@ -29,10 +28,6 @@ RUN apt-get --assume-yes install openssl
 RUN apt-get --assume-yes install xorg
 RUN apt-get --assume-yes install libssl1.1
 RUN apt-get --assume-yes install libcurl4
-
-COPY wkhtmltox-0.12.4_linux-generic-amd64.tar.xz /
-RUN tar xvJf wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
-RUN cp wkhtmltox/bin/wkhtmlto* /usr/bin/
 
 RUN apt-get --assume-yes install dcmtk
 
