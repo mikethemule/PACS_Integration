@@ -27,20 +27,7 @@ version: "3.4"
 
 services:
 
-  nginx:
-    build: php-fpm-nginx
-    image: sdscotti/portaldemo
-    depends_on: [mysql_db]
-    restart: unless-stopped
-    ports: ["443:443"]
-    volumes:
-       - ./nginx-home:/nginx-home      # NGINX web directories
-       - ./nginx-logs:/var/log/nginx   # NGINX log directory
-       - ./tls:/etc/nginx/tls          # NGINX ssl certs path
-       - ./php-fpm-nginx/default.conf:/etc/nginx/conf.d/default.conf  # NGINX .conf
-       # bind default.conf so it can be edited on the host and nginx just reloaded instead of rebuilding the container.
-       
-  pacs:
+ pacs:
       build: pacs
       image: sdscotti/pacsdemo
       depends_on: [postgres_index-db]
@@ -86,46 +73,6 @@ services:
       environment:
           POSTGRES_PASSWORD: "postgres"
           
-  #MySQL Service for NGINX Web & any other databases.
-  mysql_db:
-    image: mysql
-    container_name: mysql_db
-    command: 
-        --default-authentication-plugin=mysql_native_password
-        --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
-        --max-allowed-packet=67108864
-    restart: unless-stopped
-    ports: ["3333:3306"]
-    security_opt:
-    - seccomp:unconfined
-    tty: true
-    environment:
-      MYSQL_ROOT_PASSWORD: 'root'
-      MYSQL_USER: 'demo'
-      MYSQL_PASSWORD: 'demo'
-      SERVICE_TAGS: dev
-      SERVICE_NAME: mysql
-    volumes:
-      - ./MySQL_DB:/var/lib/mysql/
-      - ./mysql_init:/docker-entrypoint-initdb.d
-      #- ./mysql/my.cnf:/etc/mysql/my.cnf
-      
-      
-  #PHP MyAdmin, you can also use nginx to control access.  Kind of a convenience item.
-  php_myadmin:
-      depends_on:
-       - mysql_db
-      image: phpmyadmin/phpmyadmin
-      container_name: phpmyadmin
-      restart: always
-      ports:
-       - '11080:80'
-      environment:
-        PMA_HOST: mysql_db
-        UPLOAD_LIMIT: 4096M
-        
-#  MPPS testing server, DICOM, port 104 on host
-
   python_mpps:
  
    build: python_mpps
